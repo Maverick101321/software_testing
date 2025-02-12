@@ -93,12 +93,50 @@ class Booking:
 
     def select_adults(self, count=1):
         try:
-            #Waiting for the guests field to be available
+            # Wait for the guests dropdown button to be clickable
             wait = WebDriverWait(self.driver, 15)
-            guests_button = wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[data-testid="occupancy-config"]'))
-            )
+            guests_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[data-testid="occupancy-config"]')))
             guests_button.click()
             print("Clicked guests button")
+
+            # Wait for the decrease adults button to be available
+            while True:
+                decrease_adults_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.a83ed08757.c21c56c305.f38b6daa18.d691166b09.ab98298258.bb803d8689.e91c91fa93')))
+                decrease_adults_button.click()
+                print("Clicked decrease adults button")
+
+                # Get the current number of adults
+                adults_value_element = self.driver.find_element(By.ID, 'group_adults')
+                adults_value = adults_value_element.get_attribute('value')
+                print(f"Current number of adults: {adults_value}")
+
+                # Break the loop if the value of adults reaches 1
+                if int(adults_value) == 1:
+                    break
+                time.sleep(1)  # Adding a small delay to ensure the click is processed
+
+            # Wait for the increase adults button to be available
+            increase_adults_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.a83ed08757.c21c56c305.f38b6daa18.d691166b09.ab98298258.bb803d8689.f4d78af12a')))
+            print("Found increase adults button")
+
+            # Increase the number of adults to the desired count
+            while int(adults_value) < count:
+                increase_adults_button.click()
+                print("Clicked increase adults button")
+                adults_value = adults_value_element.get_attribute('value')
+                print(f"Current number of adults: {adults_value}")
+                time.sleep(1)  # Adding a small delay to ensure the click is processed
+
+            print(f"Set number of adults to: {count}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+    def submit_search(self):
+        try:
+            # Wait for the search button to be clickable
+            wait = WebDriverWait(self.driver, 15)
+            search_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[type="submit"].a83ed08757.c21c56c305.a4c1805887.f671049264.a2abacf76b.c082d89982.cceeb8986b.b9fd3c6b3c')))
+            search_button.click()
+            print("Clicked search button")
         except Exception as e:
             print(f"An error occurred: {e}")
