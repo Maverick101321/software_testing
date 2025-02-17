@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from booking.booking_filtration import BookingFiltration
 import booking.constants as const
 import time
 
@@ -140,3 +141,7 @@ class Booking:
             print("Clicked search button")
         except Exception as e:
             print(f"An error occurred: {e}")
+
+    def apply_filtrations(self):
+        filtration = BookingFiltration(driver=self.driver)
+        filtration.apply_star_rating(3, 4)
