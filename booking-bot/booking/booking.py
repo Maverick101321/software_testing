@@ -4,6 +4,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from booking.booking_filtration import BookingFiltration
+from booking.booking_report import BookingReport
+from prettytable import PrettyTable
 import booking.constants as const
 import time
 
@@ -144,4 +146,13 @@ class Booking:
 
     def apply_filtrations(self):
         filtration = BookingFiltration(driver=self.driver)
-        filtration.apply_star_rating(3, 4)
+        filtration.apply_star_rating(3)
+    
+    def report_results(self):
+        hotel_boxes = self.driver.find_elements(By.CLASS_NAME, 'dcf496a7b9 bb2746aad9')
+        report = BookingReport(hotel_boxes)
+        table = PrettyTable(
+            field_names=["Hotel Name", "Hotel Score", "Hotel Price"]
+        )
+        table.add_rows(report.pull_titles())
+        print(table)
